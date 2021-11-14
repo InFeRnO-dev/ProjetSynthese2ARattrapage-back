@@ -13,8 +13,6 @@ module.exports = (app, serviceUser, jwt) => {
     app.get('/user/:email', async (req, res) => {
         try{
             const user = await serviceUser.dao.getByEmail(email)
-            console.log(res)
-            console.log(user)
             return res.json(user)
         }catch(e){
             console.log(e)
@@ -72,22 +70,26 @@ module.exports = (app, serviceUser, jwt) => {
             res.status(400).end()
             return
         }
-        serviceUser.validatePassword(email, password)
+        const usertmp = await serviceUser.dao.getByEmail(email)
+        try{
+            serviceUser.validatePassword(email, password)
             .then(async autheticated => {
                 if (!autheticated) {
                     res.status(401).end()
                     return
                 }
-                const user
-                user.email = email
-                user.password = password
-                console.log('user = ', user)
+                const user = {email: usertmp.email, administrator: usertmp.administrator}
                 res.json({'token': jwt.generateJWT(user)})
             })
             .catch(e => {
                 console.log(e)
                 res.status(500).end()
             })
+        } 
+        catch(e){
+            console.log(e)
+        }
+        
     })
 
     app.post('/user/timeout', (req,res) => {

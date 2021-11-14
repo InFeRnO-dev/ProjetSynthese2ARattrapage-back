@@ -6,6 +6,7 @@ const morgan = require('morgan')
 
 //Service user_droits
 const UserService = require("./services/user")
+const ClientService = require("./services/client")
 
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false })) // URLEncoded form data
@@ -22,15 +23,19 @@ const db = new pg.Pool({ connectionString: connectionString })
 //New Service user-droits
 
 const userService = new UserService(db)
+const clientService = new ClientService(db)
 
 const jwt = require('./jwt')(userService,
+                             clientService
                             )
 
 //Api user-droits
 
 require("./api/user")(app, userService, jwt)
+require("./api/client")(app, clientService, userService, jwt)
 
 require('./datamodel/seeder')(userService,
+                              clientService
                              )
    .then(app.listen(3333))
 console.log("app listen on port 3333")

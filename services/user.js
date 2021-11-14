@@ -11,8 +11,12 @@ module.exports = class UserService {
         return this.dao.getAll()
     }
 
+    async getByEmail(email) {
+        return this.dao.getByEmail(email)
+    }
+
     inserthash(email, nom, prenom, date_de_naissance, adresse_1, adresse_2, code_postal, ville, numero_telephone, ca_annuel_max, taux_charge, password, administrator) {
-        console.log(email, password)
+        console.log(email, nom, prenom, date_de_naissance, adresse_1, adresse_2, code_postal, ville, numero_telephone, ca_annuel_max, taux_charge, password, administrator)
         return this.dao.insert(email, nom, prenom, date_de_naissance, adresse_1, adresse_2, code_postal, ville, numero_telephone, ca_annuel_max, taux_charge, this.hashPassword(password), administrator)
     }
     update(email, nom, prenom, date_de_naissance, adresse_1, adresse_2, code_postal, ville, numero_telephone, ca_annuel_max, taux_charge, password, administrator){
@@ -39,7 +43,6 @@ module.exports = class UserService {
     async validatePassword(email, password) {
         console.log(email, password)
         const user = await this.dao.getByEmail(email.trim())
-        console.log(user)
         return this.comparePassword(password, user.password)
     }
     comparePassword(password, hash) {

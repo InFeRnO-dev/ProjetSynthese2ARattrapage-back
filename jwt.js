@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken')
-const jwtKey = 'PS2A'
+const jwtKey = 'PS2ARattrapage'
 const jwtExpirySeconds = 3600
 
-module.exports = (userService, droitsService, userdroitsService) => {
+module.exports = (userService) => {
     return {
         validateJWT(req, res, next) {
             if (req.headers.authorization === undefined) {
@@ -12,6 +12,7 @@ module.exports = (userService, droitsService, userdroitsService) => {
             const token = req.headers.authorization.split(" ")[1];
             jwt.verify(token, jwtKey, {algorithm: "HS256"},  async (err, user) => {
                 if (err) {
+                    console.log(err)
                     res.status(401).end()
                     return
                 }
@@ -27,6 +28,7 @@ module.exports = (userService, droitsService, userdroitsService) => {
             })
         },
         generateJWT(login) {
+            console.log("login : ", login)
             return jwt.sign({login}, jwtKey, {
                 algorithm: 'HS256',
                 expiresIn: jwtExpirySeconds
