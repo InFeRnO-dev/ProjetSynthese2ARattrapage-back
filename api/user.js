@@ -3,7 +3,6 @@ module.exports = (app, serviceUser, jwt) => {
 
     app.get('/user', async (req, res) => {
         try{
-            console.log(await serviceUser.dao.getAll())
             return res.json(await serviceUser.dao.getAll())
         }catch(e){
             console.log(e)
@@ -12,7 +11,7 @@ module.exports = (app, serviceUser, jwt) => {
 
     app.get('/user/:email', async (req, res) => {
         try{
-            const user = await serviceUser.dao.getByEmail(email)
+            const user = await serviceUser.dao.getByEmail(req.params.email)
             return res.json(user)
         }catch(e){
             console.log(e)
@@ -20,7 +19,7 @@ module.exports = (app, serviceUser, jwt) => {
         
     })
 
-    app.post('/user/add', (req, res) => {
+    app.post('/user/add', async (req, res) => {
         try{
             serviceUser.inserthash(req.body.email, req.body.nom, req.body.prenom, req.body.date_de_naissance, req.body.adresse_1, req.body.adresse_2, req.body.code_postal, req.body.ville, req.body.numero_telephone, req.body.ca_annuel_max, req.body.taux_charge, req.body.password, req.body.administrator)
             res.status(200).end()
@@ -29,10 +28,10 @@ module.exports = (app, serviceUser, jwt) => {
             res.status(500).end()
         }
     })
-    app.put('/user/edit/:email', (req, res) => {
+    app.put('/user/edit/:email', async (req, res) => {
+        const user = await serviceUser.getByEmail(req.params.email)
         try{
-            console.log(req.params.email, req.body.nom, req.body.prenom, req.body.date_de_naissance, req.body.adresse_1, req.body.adresse_2, req.body.code_postal, req.body.ville, req.body.numero_telephone, req.body.ca_annuel_max, req.body.taux_charge, req.body.password, req.body.administrator)
-            serviceUser.update(req.params.email, req.body.nom, req.body.prenom, req.body.date_de_naissance, req.body.adresse_1, req.body.adresse_2, req.body.code_postal, req.body.ville, req.body.numero_telephone, req.body.ca_annuel_max, req.body.taux_charge, req.body.password, req.body.administrator)
+            serviceUser.update(req.body.email, req.body.nom, req.body.prenom, req.body.date_de_naissance, req.body.adresse_1, req.body.adresse_2, req.body.code_postal, req.body.ville, req.body.numero_telephone, req.body.ca_annuel_max, req.body.taux_charge, req.body.password, req.body.administrator, user.id_user)
             .then(res.status(200).end())
             
         }catch(e){
@@ -50,17 +49,6 @@ module.exports = (app, serviceUser, jwt) => {
             res.status(500).end()
             console.log(e)
         }
-    })
-
-    app.post('/user', async (req, res) => {
-        try{
-            const user = await serviceUser.dao.getByEmail(req.body.email)
-            console.log(user)
-            return res.json(user)
-        }catch(e){
-            console.log(e)
-        }
-        
     })
 
     app.post('/user/authenticate', async (req, res) => {

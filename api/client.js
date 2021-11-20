@@ -5,7 +5,6 @@ module.exports = (app, serviceClient, serviceUser, jwt) => {
 
         const user = await serviceUser.getByEmail(req.params.email)
         try{
-            console.log(user)
             return res.json(await serviceClient.getAllClientByIdUser(user.id_user))
         }catch(e){
             console.log(e)
@@ -16,7 +15,6 @@ module.exports = (app, serviceClient, serviceUser, jwt) => {
         const user = await serviceUser.getByEmail(req.params.email)
         try{
             const clients = await serviceClient.getClientBySearch(user.id_user, req.params.search)
-            console.log(clients)
             return res.json(clients)
         }catch(e){
             console.log(e)

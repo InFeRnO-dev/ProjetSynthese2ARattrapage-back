@@ -1,5 +1,7 @@
 module.exports = (userService,
-                  clientService
+                  clientService,
+                  statutService,
+                  projetService
                   ) => {
     return new Promise(async (resolve, reject) => {
 
@@ -33,6 +35,41 @@ module.exports = (userService,
             if (e.code === "42P07") { // TABLE ALREADY EXISTS https://www.postgresql.org/docs/8.2/errcodes-appendix.html
                 resolve()
                 console.log("table client déjà créé")
+            } else {
+                reject(e)
+                console.log(e)
+            }
+        }
+
+        // creation table statut et seed statut
+
+        try {
+            await statutService.dao.db.query("CREATE TABLE public.statut(id_statut SERIAL PRIMARY KEY, label TEXT NOT NULL)")
+            //INSERTs
+            statutService.insert(1, "prospect").then(res => console.log(res)).catch(e => console.log(e))
+            statutService.insert(2, "devis envoyé").then(res => console.log(res)).catch(e => console.log(e))
+            statutService.insert(3, "devis accepté").then(res => console.log(res)).catch(e => console.log(e))
+            statutService.insert(4, "démarré").then(res => console.log(res)).catch(e => console.log(e))
+            statutService.insert(5, "terminé").then(res => console.log(res)).catch(e => console.log(e))
+            statutService.insert(6, "annulé").then(res => console.log(res)).catch(e => console.log(e))
+        } catch (e) {
+            if (e.code === "42P07") { // TABLE ALREADY EXISTS https://www.postgresql.org/docs/8.2/errcodes-appendix.html
+                resolve()
+                console.log("table statut déjà créé")
+            } else {
+                reject(e)
+                console.log(e)
+            }
+        }
+
+          // creation table projet et seed projet
+
+          try {
+            await projetService.dao.db.query("CREATE TABLE public.projet(id_projet SERIAL PRIMARY KEY, nom TEXT NOT NULL, id_statut INT REFERENCES public.statut(id_statut), id_client INT REFERENCES public.client(id_client))")
+        } catch (e) {
+            if (e.code === "42P07") { // TABLE ALREADY EXISTS https://www.postgresql.org/docs/8.2/errcodes-appendix.html
+                resolve()
+                console.log("table projet déjà créé")
             } else {
                 reject(e)
                 console.log(e)

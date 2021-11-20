@@ -24,9 +24,9 @@ module.exports = class UserDAO extends BaseDAO {
             [email, nom, prenom, date_de_naissance, adresse_1, adresse_2, code_postal, ville, numero_telephone, ca_annuel_max, taux_charge, password, administrator])
     }
 
-    update(email, nom, prenom, date_de_naissance, adresse_1, adresse_2, code_postal, ville, numero_telephone, ca_annuel_max, taux_charge, password, administrator) {
-            return this.db.query("UPDATE public.user SET nom=$2, prenom=$3, date_de_naissance=$4, adresse_1=$5, adresse_2=$6, code_postal=$7, ville=$8, numero_telephone=$9, ca_annuel_max=$10, taux_charge=$11, password=$12, administrator=$13 WHERE email=$1",
-            [email, nom, prenom, date_de_naissance, adresse_1, adresse_2, code_postal, ville, numero_telephone, ca_annuel_max, taux_charge, password, administrator])
+    update(email, nom, prenom, date_de_naissance, adresse_1, adresse_2, code_postal, ville, numero_telephone, ca_annuel_max, taux_charge, password, administrator, id_user) {
+            return this.db.query("UPDATE public.user SET email=$1, nom=$2, prenom=$3, date_de_naissance=$4, adresse_1=$5, adresse_2=$6, code_postal=$7, ville=$8, numero_telephone=$9, ca_annuel_max=$10, taux_charge=$11, password=$12, administrator=$13 WHERE id_user=$14",
+            [email, nom, prenom, date_de_naissance, adresse_1, adresse_2, code_postal, ville, numero_telephone, ca_annuel_max, taux_charge, password, administrator, id_user])
     }
 
     delete(email) {
