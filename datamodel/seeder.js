@@ -1,13 +1,14 @@
 module.exports = (userService,
                   clientService,
                   statutService,
-                  projetService
+                  projetService,
+                  etatfactureService,
+                  moyenpaiementfactureService,
+                  entetefactureService,
+                  lignefactureService,
+                  dashboardService
                   ) => {
     return new Promise(async (resolve, reject) => {
-
-    /* 
-                                            #### USER #####
-    */
 
         // creation table user et seed user
 
@@ -62,7 +63,7 @@ module.exports = (userService,
             }
         }
 
-          // creation table projet et seed projet
+          // creation table projet
 
           try {
             await projetService.dao.db.query("CREATE TABLE public.projet(id_projet SERIAL PRIMARY KEY, nom TEXT NOT NULL, id_statut INT REFERENCES public.statut(id_statut), id_client INT REFERENCES public.client(id_client))")
@@ -70,6 +71,71 @@ module.exports = (userService,
             if (e.code === "42P07") { // TABLE ALREADY EXISTS https://www.postgresql.org/docs/8.2/errcodes-appendix.html
                 resolve()
                 console.log("table projet déjà créé")
+            } else {
+                reject(e)
+                console.log(e)
+            }
+        }
+
+        // creation table etat_facture et seed etat_facture
+
+        try {
+            await etatfactureService.dao.db.query("CREATE TABLE public.etat_facture(id_etat_facture SERIAL PRIMARY KEY, etat TEXT NOT NULL)")
+            //INSERTs
+            etatfactureService.insert(1, "Editée").then(res => console.log(res)).catch(e => console.log(e))
+            etatfactureService.insert(2, "Envoyée").then(res => console.log(res)).catch(e => console.log(e))
+            etatfactureService.insert(3, "Payée").then(res => console.log(res)).catch(e => console.log(e))
+        } catch (e) {
+            if (e.code === "42P07") { // TABLE ALREADY EXISTS https://www.postgresql.org/docs/8.2/errcodes-appendix.html
+                resolve()
+                console.log("table etat_facture déjà créé")
+            } else {
+                reject(e)
+                console.log(e)
+            }
+        }
+
+        // creation table moyen_paiement_facture et seed moyen_paiement_facture
+
+        try {
+            await moyenpaiementfactureService.dao.db.query("CREATE TABLE public.moyen_paiement_facture(id_moyen_paiement_facture SERIAL PRIMARY KEY, moyen_paiement TEXT NOT NULL)")
+            //INSERTs
+            moyenpaiementfactureService.insert(1, "Chèque").then(res => console.log(res)).catch(e => console.log(e))
+            moyenpaiementfactureService.insert(2, "Virement").then(res => console.log(res)).catch(e => console.log(e))
+            moyenpaiementfactureService.insert(3, "Paypal").then(res => console.log(res)).catch(e => console.log(e))
+            moyenpaiementfactureService.insert(4, "Autre").then(res => console.log(res)).catch(e => console.log(e))
+        } catch (e) {
+            if (e.code === "42P07") { // TABLE ALREADY EXISTS https://www.postgresql.org/docs/8.2/errcodes-appendix.html
+                resolve()
+                console.log("table moyen_paiement_facture déjà créé")
+            } else {
+                reject(e)
+                console.log(e)
+            }
+        }
+
+        // creation table entete_facture
+
+        try {
+            await entetefactureService.dao.db.query("CREATE TABLE public.entete_facture(id_entete_facture SERIAL PRIMARY KEY, numero_facture INT NOT NULL, date_edition DATE NOT NULL, date_paiement_limite DATE NOT NULL, date_paiement_effectif DATE, note TEXT, id_paiement INT REFERENCES public.moyen_paiement_facture(id_moyen_paiement_facture), id_etat INT REFERENCES public.etat_facture(id_etat_facture), id_projet INT REFERENCES public.projet(id_projet))")
+        } catch (e) {
+            if (e.code === "42P07") { // TABLE ALREADY EXISTS https://www.postgresql.org/docs/8.2/errcodes-appendix.html
+                resolve()
+                console.log("table entete_facture déjà créé")
+            } else {
+                reject(e)
+                console.log(e)
+            }
+        }
+
+        // creation table ligne_facture
+
+        try {
+            await lignefactureService.dao.db.query("CREATE TABLE public.ligne_facture(id_ligne_facture SERIAL PRIMARY KEY, libelle TEXT NOT NULL, quantite INT NOT NULL, prix_unitaire NUMERIC(7,2), id_entete_facture INT REFERENCES public.entete_facture(id_entete_facture) ON DELETE CASCADE)")
+        } catch (e) {
+            if (e.code === "42P07") { // TABLE ALREADY EXISTS https://www.postgresql.org/docs/8.2/errcodes-appendix.html
+                resolve()
+                console.log("table ligne_facture déjà créé")
             } else {
                 reject(e)
                 console.log(e)

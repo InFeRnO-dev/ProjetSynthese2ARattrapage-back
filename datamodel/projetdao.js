@@ -8,7 +8,6 @@ module.exports = class ProjetDAO extends BaseDAO {
 
     getProjetByIdStatutIdClient(id_user, id_client, id_statut){
         if(id_statut !== '0' && id_client === '0'){
-            console.log("get all projet by id_statut")
             return new Promise((resolve, reject) =>
             this.db.query(`SELECT pr.id_projet, pr.nom, pr.id_statut, st.label, pr.id_client, cl.nom as nom_client, cl.id_user FROM public.projet pr
                            LEFT JOIN public.client cl on cl.id_client = pr.id_client
@@ -20,7 +19,6 @@ module.exports = class ProjetDAO extends BaseDAO {
             .catch(e => {reject(e)}))
         }
         else if(id_client !== '0' && id_statut === '0'){
-            console.log("get all projet by id_client")
             return new Promise((resolve, reject) =>
             this.db.query(`SELECT pr.id_projet, pr.nom, pr.id_statut, st.label, pr.id_client, cl.nom as nom_client, cl.id_user FROM public.projet pr
                            LEFT JOIN public.client cl on cl.id_client = pr.id_client
@@ -32,7 +30,6 @@ module.exports = class ProjetDAO extends BaseDAO {
             .catch(e => {reject(e)}))
         }
         else if(id_statut === '0' && id_client === '0'){
-            console.log("get all projet")
             return new Promise((resolve, reject) =>
             this.db.query(`SELECT pr.id_projet, pr.nom, pr.id_statut, st.label, pr.id_client, cl.nom as nom_client, cl.id_user FROM public.projet pr
                            LEFT JOIN public.client cl on cl.id_client = pr.id_client
@@ -44,7 +41,6 @@ module.exports = class ProjetDAO extends BaseDAO {
             .catch(e => {reject(e)}))
         }
         else {
-            console.log("get all projet by id_client and id_statut")
             return new Promise((resolve, reject) =>
             this.db.query(`SELECT pr.id_projet, pr.nom, pr.id_statut, st.label, pr.id_client, cl.nom as nom_client, cl.id_user FROM public.projet pr
                            LEFT JOIN public.client cl on cl.id_client = pr.id_client

@@ -16,7 +16,6 @@ module.exports = (userService) => {
                     res.status(401).end()
                     return
                 }
-                //console.log(user)
                 try {
                     req.user = await userService.dao.getByEmail(user.email)
                     return next()
@@ -28,7 +27,6 @@ module.exports = (userService) => {
             })
         },
         generateJWT(login) {
-            //console.log("login : ", login)
             return jwt.sign({login}, jwtKey, {
                 algorithm: 'HS256',
                 expiresIn: jwtExpirySeconds

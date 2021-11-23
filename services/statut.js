@@ -1,7 +1,7 @@
 const StatutDAO = require("../datamodel/statutdao")
 const Statut = require('../class/statut')
 
-module.exports = class UserService {
+module.exports = class StatutService {
     constructor(db) {
         this.dao = new StatutDAO(db)
     }

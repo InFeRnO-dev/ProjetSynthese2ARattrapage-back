@@ -1,7 +1,7 @@
 const ProjetDAO = require("../datamodel/projetdao")
 const Projet = require('../class/projet')
 
-module.exports = class UserService {
+module.exports = class ProjetService {
     constructor(db) {
         this.dao = new ProjetDAO(db)
     }
