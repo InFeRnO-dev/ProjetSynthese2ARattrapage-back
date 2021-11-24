@@ -1,7 +1,7 @@
 const jwtreq = require('jsonwebtoken')
 module.exports = (app, serviceDashboard, serviceUser, jwt) => {
 
-    app.get('/dashboard/CAannuel/:email/:annee', jwt.validateJWT ,async (req, res) => {
+    app.get('/dashboard/CAannuel/:email/:annee' ,async (req, res) => {
 
         const user = await serviceUser.getByEmail(req.params.email)
         const datedebut = req.params.annee + "-01-01"
